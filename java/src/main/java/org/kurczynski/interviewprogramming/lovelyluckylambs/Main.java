@@ -1,5 +1,7 @@
 package org.kurczynski.interviewprogramming.lovelyluckylambs;
 
+import java.math.BigInteger;
+
 public class Main {
 	public static void main(String args[]) {
 		System.out.println(Main.answer(10));
@@ -7,20 +9,21 @@ public class Main {
 	}
 
 	public static int generous(int lambs) {
-		return (int) ((Math.log(lambs) / Math.log(2)));
+		Double tmp = ((Math.log(lambs) / Math.log(2)));
+		return tmp.intValue();
 	}
 
-	public static int stingy(int total) {
-		int n1 = 1;
-		int n2 = 1;
-		int n;
+	public static int stingy(int lambs) {
+		BigInteger n1 = BigInteger.valueOf(1);
+		BigInteger n2 = BigInteger.valueOf(1);
+		BigInteger n;
 
-		int sum = n1 + n2;
+		BigInteger sum = n1.add(n2);
 		int counter = 1;
 
-		while (sum <= total) {
-			n = n2 + n1;
-			sum += n;
+		while (sum.compareTo(BigInteger.valueOf(lambs)) <= 0) {
+			n = n2.add(n1);
+			sum = sum.add(n);
 			n2 = n1;
 			n1 = n;
 
@@ -31,6 +34,6 @@ public class Main {
 	}
 
 	public static int answer(int lambs) {
-		return Math.abs(Main.generous(lambs) - Main.stingy(lambs));
+		return Main.stingy(lambs) - Main.generous(lambs);
 	}
 }
