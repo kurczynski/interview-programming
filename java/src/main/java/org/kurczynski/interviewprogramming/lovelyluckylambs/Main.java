@@ -8,18 +8,40 @@ public class Main {
 
 	public static void main(String args[]) {
 		try {
-			System.out.println(Main.answer(10));
-			System.out.println(Main.answer(143));
+			if (args.length != 1)
+				System.exit(1);
+
+			System.out.println(Main.answer(Integer.parseInt(args[0])));
 		} catch (InvalidParameterSpecException e) {
 			e.printStackTrace();
+
+			System.exit(1);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+
+			System.exit(1);
 		}
 	}
 
-	public static int generous(int lambs) {
-		return (int) (Math.log(lambs) / Math.log(2));
+	/**
+	 * This method finds the number of henchmen that can be given the most generous number of LAMBs. Basically powers of
+	 * two.
+	 *
+	 * @param lambs The number of LAMBs to be distributed.
+	 * @return The number of henchmen that can be given LAMBs.
+	 */
+	private static int generous(int lambs) {
+		return (int) (Math.log(lambs + 1) / Math.log(2));
 	}
 
-	public static int stingy(int lambs) {
+	/**
+	 * This method finds the number of hendhmen that can be given the most stingy number of LAMBs. Basically
+	 * Fibonacci's Sequence.
+	 *
+	 * @param lambs The number of LAMBs to be distributed.
+	 * @return The number of henchmen that can be given LAMBs.
+	 */
+	private static int stingy(int lambs) {
 		int n1 = 1;
 		int n2 = 1;
 		int n;
@@ -39,7 +61,14 @@ public class Main {
 		return counter;
 	}
 
-	public static int answer(int lambs) throws InvalidParameterSpecException {
+	/**
+	 * Finds the difference in number of henchmen that can be paid the most stingy and most generously.
+	 *
+	 * @param lambs Number of LAMBs that can be distributed.
+	 * @return The difference in the number of henchmen to recieve stingy and generous LAMB distribution.
+	 * @throws InvalidParameterSpecException Thrown if an invalid number of LAMBs are given.
+	 */
+	static int answer(int lambs) throws InvalidParameterSpecException {
 		if (lambs < Main.MIN_LAMBS || lambs > Main.MAX_LAMBS)
 			throw new InvalidParameterSpecException(
 					"LAMBs must be between " + Main.MIN_LAMBS + " and " + Main.MAX_LAMBS);
