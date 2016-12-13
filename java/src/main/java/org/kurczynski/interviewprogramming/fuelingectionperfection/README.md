@@ -9,9 +9,9 @@ bulk into the fuel intake. You need to figure out the most efficient way to sort
 
 The fuel control mechanisms have three operations: 
 
-1) Add one fuel pellet
-2) Remove one fuel pellet
-3) Divide the entire group of fuel pellets by 2 (due to the destructive energy released when a quantum antimatter pellet is cut in half, the safety controls will only allow this to happen if 
+1. Add one fuel pellet
+2. Remove one fuel pellet
+3. Divide the entire group of fuel pellets by 2 (due to the destructive energy released when a quantum antimatter pellet is cut in half, the safety controls will only allow this to happen if 
 there is an even number of pellets)
 
 Write a function called answer(n) which takes a positive integer as a string and returns the minimum number of operations needed to transform the number of pellets to 1. The fuel intake 
@@ -20,13 +20,6 @@ control panel can only display a number up to 309 digits long, so there won't ev
 For example:
 answer(4) returns 2: 4 -> 2 -> 1
 answer(15) returns 5: 15 -> 16 -> 8 -> 4 -> 2 -> 1
-
-
-Languages
-=========
-
-To provide a Python solution, edit solution.py
-To provide a Java solution, edit solution.java
 
 Test cases
 ==========
@@ -40,6 +33,3 @@ Inputs:
     (string) n = "15"
 Output:
     (int) 5
-
-Use verify [file] to test your solution and see how it does. When you are finished editing your code, use submit [file] to submit your answer. If your solution passes the test cases, it will 
-be removed from your home folder.
