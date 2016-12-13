@@ -20,6 +20,7 @@ control panel can only display a number up to 309 digits long, so there won't ev
 For example:
 
 answer(4) returns 2: 4 -> 2 -> 1
+
 answer(15) returns 5: 15 -> 16 -> 8 -> 4 -> 2 -> 1
 
 Test cases
