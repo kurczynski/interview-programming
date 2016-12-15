@@ -7,11 +7,11 @@ import java.math.RoundingMode;
 
 public class Answer {
 	public static void main(String args[]) {
+		for (int i = 1; i < 20; i++)
+			System.out.println(i + ": " + Answer.answer(String.valueOf(i)));
 		System.out.println(Answer.answer(
 				"210394610234012983741982476098216357698769087690870987203148712034987120938462109837402198409012394098213740961231987654987634987230982130498723492103946102340129837419824760982163576987690876908709872031487120349871209384621098374021984090123940982137409612319876549876349872309821304987234935498734598735498"));
 
-		for (int i = 1; i < 20; i++)
-			System.out.println(i + ": " + Answer.answer(String.valueOf(i)));
 	}
 
 	public static final BigInteger BIG_INTEGER_TWO = BigInteger.valueOf(2);
@@ -31,15 +31,7 @@ public class Answer {
 
 		BigInteger fuelPellets = new BigInteger(n);
 
-		Double output = Answer.bigLog10(fuelPellets) / Math.log10(2);
-		int decimalIndex = output.toString().indexOf(".");
-		String outputString = output.toString().substring(0, decimalIndex + 2);
-
-		BigInteger logarithm = new BigDecimal(outputString).setScale(0, BigDecimal.ROUND_HALF_DOWN).toBigInteger();
-
-		BigInteger roundedPower = Answer.bigPow(Answer.BIG_INTEGER_TWO, logarithm);
-
-		return Answer.getMinOperations(fuelPellets, roundedPower);
+		return Answer.getMinOperations(fuelPellets);
 	}
 
 	/**
@@ -86,17 +78,38 @@ public class Answer {
 	/**
 	 * Finds the minimum number of operations needed to process the fuel pellets.
 	 *
-	 * @param fuelPellets  number of fuel pellets given to be processed.
-	 * @param roundedPower the power of two that is closest to the number of given fuel pellets.
+	 * @param fuelPellets number of fuel pellets given to be processed.
 	 * @return number of operations.
 	 */
-	static int getMinOperations(BigInteger fuelPellets, BigInteger roundedPower) {
-		int operations = fuelPellets.subtract(roundedPower).abs().intValue();
+	static int getMinOperations(BigInteger fuelPellets) {
+		int operations = 0;
 
-		while (!roundedPower.equals(BigInteger.ONE)) {
-			roundedPower = roundedPower.divide(Answer.BIG_INTEGER_TWO);
+		while (fuelPellets.compareTo(BigInteger.ONE) == 1) {
+			if (fuelPellets.mod(Answer.BIG_INTEGER_TWO).equals(BigInteger.ZERO)) {
+				fuelPellets = fuelPellets.divide(Answer.BIG_INTEGER_TWO);
 
-			operations++;
+				operations++;
+			} else {
+				BigDecimal logarithm = BigDecimal.valueOf(Answer.bigLog10(fuelPellets) / Math.log10(2));
+
+				BigInteger powerCeiling = Answer.bigPow(Answer.BIG_INTEGER_TWO, logarithm.setScale(0, RoundingMode.CEILING).toBigInteger());
+				BigInteger addDifference = powerCeiling.subtract(fuelPellets);
+
+				BigInteger powerFloor = Answer.bigPow(Answer.BIG_INTEGER_TWO, logarithm.setScale(0, RoundingMode.FLOOR).toBigInteger());
+				BigInteger subtractDifference = fuelPellets.subtract(powerFloor);
+
+				int difference = subtractDifference.compareTo(addDifference);
+
+				if (difference == -1 || difference == 0) {
+					operations += subtractDifference.intValue();
+
+					fuelPellets = powerFloor;
+				} else {
+					operations += addDifference.intValue();
+
+					fuelPellets = powerCeiling;
+				}
+			}
 		}
 
 		return operations;
