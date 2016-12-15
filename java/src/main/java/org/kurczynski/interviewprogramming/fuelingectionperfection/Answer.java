@@ -3,6 +3,7 @@ package org.kurczynski.interviewprogramming.fuelingectionperfection;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class Answer {
 	public static void main(String args[]) {
@@ -31,9 +32,12 @@ public class Answer {
 		BigInteger fuelPellets = new BigInteger(n);
 
 		Double output = Answer.bigLog10(fuelPellets) / Math.log10(2);
+		int decimalIndex = output.toString().indexOf(".");
+		String outputString = output.toString().substring(0, decimalIndex + 2);
 
-		long logarithm = Math.round(output);
-		BigInteger roundedPower = Answer.bigPow(Answer.BIG_INTEGER_TWO, BigInteger.valueOf(logarithm));
+		BigInteger logarithm = new BigDecimal(outputString).setScale(0, BigDecimal.ROUND_HALF_DOWN).toBigInteger();
+
+		BigInteger roundedPower = Answer.bigPow(Answer.BIG_INTEGER_TWO, logarithm);
 
 		return Answer.getMinOperations(fuelPellets, roundedPower);
 	}
