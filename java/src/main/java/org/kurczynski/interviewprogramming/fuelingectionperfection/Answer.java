@@ -8,9 +8,9 @@ public class Answer {
 	public static void main(String args[]) {
 		System.out.println(Answer.answer(
 				"210394610234012983741982476098216357698769087690870987203148712034987120938462109837402198409012394098213740961231987654987634987230982130498723492103946102340129837419824760982163576987690876908709872031487120349871209384621098374021984090123940982137409612319876549876349872309821304987234935498734598735498"));
-		System.out.println(Answer.answer("4"));
-		System.out.println(Answer.answer("15"));
-		System.out.println(Answer.answer("1"));
+
+		for (int i = 1; i < 20; i++)
+			System.out.println(i + ": " + Answer.answer(String.valueOf(i)));
 	}
 
 	public static final BigInteger BIG_INTEGER_TWO = BigInteger.valueOf(2);
@@ -32,12 +32,10 @@ public class Answer {
 
 		Double output = Answer.bigLog10(fuelPellets) / Math.log10(2);
 
-		BigInteger offset = Answer.getOffset(output);
-
 		long logarithm = Math.round(output);
-		BigInteger roundedPower = BigInteger.valueOf(2).pow(BigDecimal.valueOf(logarithm);
+		BigInteger roundedPower = Answer.bigPow(Answer.BIG_INTEGER_TWO, BigInteger.valueOf(logarithm));
 
-		return Answer.getMinOperations(fuelPellets, roundedPower, offset);
+		return Answer.getMinOperations(fuelPellets, roundedPower);
 	}
 
 	/**
@@ -55,27 +53,30 @@ public class Answer {
 				.divide(BigDecimal.valueOf(10).pow(length), MathContext.DECIMAL64)
 				.doubleValue();
 
+		/* log10(10^length) is just length, so don't bother expanding the possibly enormous number. */
 		return length + Math.log10(coefficient);
 	}
 
 	/**
-	 * Finds the offset to be used for getting the fuel pellets to a power of two. The offset is determined by rounding
-	 * to the nearest whole number, i.e. 1 if the number rounds up or -1 if the number rounds down.
+	 * Calculates the exponential power of a given base and power using {@link BigInteger}.
 	 *
-	 * @param output the logarithm of the number of fuel pellets to get the offset for.
-	 * @return the offset for the given logarithm, 1 if it rounds up, -1 if it rounds down, and 0 if it is already a
-	 * whole number.
+	 * @param base base of the exponential numbers.
+	 * @param pow  power of the exponential numbers.
+	 * @return result of the exponential numbers.
 	 */
-	static BigInteger getOffset(Double output) {
-		BigInteger offset = BigInteger.ZERO;
+	static BigInteger bigPow(BigInteger base, BigInteger pow) {
+		if (pow.equals(BigInteger.ZERO))
+			return BigInteger.ONE;
 
-		if (Math.floor(output) != output) {
-			double difference = Math.round(output - Math.floor(output));
+		BigInteger i = BigInteger.ONE;
+		BigInteger output = base;
 
-			offset = BigInteger.valueOf(difference == 0 ? -1 : 1);
+		while (!pow.equals(i)) {
+			output = output.multiply(base);
+			i = i.add(BigInteger.ONE);
 		}
 
-		return offset;
+		return output;
 	}
 
 	/**
@@ -83,20 +84,13 @@ public class Answer {
 	 *
 	 * @param fuelPellets  number of fuel pellets given to be processed.
 	 * @param roundedPower the power of two that is closest to the number of given fuel pellets.
-	 * @param offset       the offset returned by {@link Answer#getOffset(Double)}.
 	 * @return number of operations.
 	 */
-	static int getMinOperations(BigInteger fuelPellets, BigInteger roundedPower, BigInteger offset) {
-		int operations = 0;
+	static int getMinOperations(BigInteger fuelPellets, BigInteger roundedPower) {
+		int operations = fuelPellets.subtract(roundedPower).abs().intValue();
 
-		while (!fuelPellets.equals(roundedPower)) {
-			fuelPellets = fuelPellets.add(offset);
-
-			operations++;
-		}
-
-		while (!fuelPellets.equals(BigInteger.ONE)) {
-			fuelPellets = fuelPellets.divide(Answer.BIG_INTEGER_TWO);
+		while (!roundedPower.equals(BigInteger.ONE)) {
+			roundedPower = roundedPower.divide(Answer.BIG_INTEGER_TWO);
 
 			operations++;
 		}
